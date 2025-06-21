@@ -10,15 +10,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- Configuration ---
-# CLOUDFLARE_SECRET_KEY is no longer needed.
-
 TEMP_DIR = 'temp_files'
 if not os.path.exists(TEMP_DIR):
     os.makedirs(TEMP_DIR)
 
 # --- Flask App Initialization ---
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}}) 
+
+# --- CORS Configuration ---
+# This tells the backend to only accept API requests from your website domain.
+# I've also included some common local development origins you might use.
+allowed_origins = [
+    "https://sciencecodons.com",
+    "http://sciencecodons.com",
+    "http://localhost",
+    "http://127.0.0.1"
+]
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}}) 
 
 # --- PDB to PDBQT Conversion Logic ---
 def convert_pdb_to_pdbqt(pdb_data_string: str):
@@ -51,11 +59,6 @@ def convert_pdb_to_pdbqt(pdb_data_string: str):
 # --- API Endpoints ---
 @app.route('/api/convert', methods=['POST'])
 def handle_conversion():
-    """
-    Handles the main conversion request from the frontend.
-    """
-    # CAPTCHA verification has been removed.
-
     pdb_data = ""
     if 'file' in request.files and request.files['file'].filename != '':
         pdb_file = request.files['file']
@@ -83,18 +86,13 @@ def handle_conversion():
 
 @app.route('/api/download/<filename>')
 def download_converted_file(filename):
-    """
-    Serves the converted file for download.
-    """
     return send_from_directory(TEMP_DIR, filename, as_attachment=True)
 
+# The root route is no longer needed since index.html is on another server
+# You can keep it for testing or remove it.
 @app.route('/')
 def serve_index():
-    """
-    Serves the index.html file for the root URL.
-    """
-    return send_from_directory('.', 'index.html')
-
+    return "Backend API is running."
 
 # --- Main Entry Point ---
 if __name__ == '__main__':
