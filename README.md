@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PDB to PDBQT Converter API
 
 This is a Flask-based backend API for converting Protein Data Bank (`.pdb`) files to the AutoDock Vina (`.pdbqt`) format. It is designed to be deployed as a containerized service on platforms like Google Cloud Run.
@@ -75,3 +76,4 @@ gcloud run deploy pdb-converter-api --source . --region YOUR_REGION --allow-unau
 Set the secret environment variable in Cloud Run:
 
 gcloud run services update pdb-converter-api --region YOUR_REGION --set-env-vars CLOUDFLARE_SECRET_KEY="YOUR_REAL_SECRET_KEY"
+=======
